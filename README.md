@@ -4,13 +4,16 @@ Documentation for Trade Me's API in OpenAPI format, both individual files and tr
 
 ## Overview
 
-**OpenAPI Implementation**: The repository includes an incomplete OpenAPI 3.1 specification with:
+**OpenAPI Implementation**: The repository includes a comprehensive OpenAPI 3.1 specification with:
 
-- **5 endpoint paths**: Listings, Categories, Search (General & Suggestions), and Watchlist operations
-- **44 schema components**: Complex data structures including Listing details, Search results, and Category definitions
-- **4 path modules**: Organized endpoint definitions with full parameter and response specifications
+- **240 endpoint paths**: Complete coverage of Trade Me API (Listings, Categories, Search, My Trade Me, Selling, Property, Jobs, and more)
+- **423 schema components**: All data structures including requests, responses, and nested objects
+- **35 API categories**: Organized by functional area with proper tagging
 - **Authentication models**: OAuth 1.0a configuration for Trade Me API access
+- **Both formats**: YAML (2.6MB) and JSON (3.2MB) specifications available
 - **Interactive documentation**: Swagger UI integration for testing and exploration
+
+**Legacy Sample Implementation**: A proof-of-concept implementation with 5 endpoints is also available in the repository for reference.
 
 ## Dataset Structure (data/)
 
@@ -28,10 +31,14 @@ Documentation for Trade Me's API in OpenAPI format, both individual files and tr
 
 ### Scripts
 
-- **`scripts/download-trademe-docs.sh`** - Script to download official Trade Me API developer documentation
-- **`scripts/generate-openapi-schemas.js`** - Sample script to generate OpenAPI schemas for endpoint **`data/json-doc/listing-methods/retrieve-the-details-of-a-single-listing.json`**
-- **`scripts/browse-api.sh`** - Generates a single consolidated yaml file in OpenAPI 3.1 specification format using Redocly and opens this local file for browsing using Docker/Swagger
-- **`scripts/stop-api-server.sh`** - Stops the local Docker web server if still running
+- **`scripts/generate-complete-openapi.js`** - **NEW!** Generate complete OpenAPI 3.1 spec from all 265 endpoints (423 schemas, 240 paths)
+- **`scripts/generate-download-script.py`** - Generate download script from JSON specs
+- **`scripts/download-trademe-docs.sh`** - Download official Trade Me API developer documentation (all 265 endpoints)
+- **`scripts/generate-openapi-schemas.js`** - Legacy: Sample OpenAPI schema generator for single endpoint
+- **`scripts/browse-api.sh`** - Generate consolidated YAML and launch Swagger UI
+- **`scripts/stop-api-server.sh`** - Stop the local Docker web server
+
+See **`scripts/README.md`** for detailed documentation.
 
 ### Specs
 
@@ -45,38 +52,60 @@ This project provides an example of a simple, clean OpenAPI-based structure to r
 
 ## API Coverage
 
-The project includes comprehensive extraction of 265 active Trade Me API endpoints with complete JSON documentation. A compartmentalized OpenAPI structure exists under openapi/api.yaml (5 sample endpoints) along with a single consolidated file at openapi/openapi-consolidated.yaml.
+The project includes comprehensive extraction and OpenAPI transformation of the Trade Me API:
+
+- **265 JSON specifications**: Complete endpoint documentation with parameters, schemas, and examples
+- **263 OpenAPI endpoints**: Full OpenAPI 3.1 specification (2 endpoints excluded due to incomplete source data)
+- **423 schemas**: All request/response types with nested objects and enumerations
+- **35 API categories**: Address, Bidding, Branding, Catalogue, Document Service, Favourites, Fixed Price Offers, Jobs, Listings, Membership, My Trade Me, OAuth, Photos, Ping, Property, Renti, Search, Selling, SEO, Shipping, and Suburb Search methods
+
+**Available Specifications**:
+- **Complete**: `openapi/trademe-api.yaml` - Full API specification (2.6MB, 240 paths, 423 schemas)
+- **Legacy Sample**: `openapi/api.yaml` - Proof-of-concept with 5 endpoints for reference
 
 Note that deprecated endpoints have been intentionally excluded from the dataset.
 
 ## Using the Dataset
 
-### Browsing the Consolidated OpenAPI Specification (Swagger)
+### Generating the Complete OpenAPI Specification
 
-The repository includes a functional OpenAPI 3.1 specification for 5 endpoints and 44 schema components:
+**Generate complete OpenAPI spec from all 265 JSON endpoints:**
 
-**Quick Start:**
+```bash
+# Install dependencies (first time only)
+npm install js-yaml
+
+# Generate complete OpenAPI specification
+node scripts/generate-complete-openapi.js
+
+# Output:
+#   openapi/trademe-api.yaml (2.6MB, 240 paths, 423 schemas)
+#   openapi/trademe-api.json (3.2MB)
+```
+
+### Browsing the OpenAPI Specification (Swagger)
+
+**View the complete API specification:**
+
+```bash
+# View complete specification in Swagger UI
+docker run -d -p 5353:8080 --name trademe-api-docs --rm \
+  -e SWAGGER_JSON=/openapi/trademe-api.yaml \
+  -v "$(pwd)/openapi:/openapi" swaggerapi/swagger-ui
+
+# Open browser to: http://localhost:5353
+
+# Stop server: docker stop trademe-api-docs
+```
+
+**View the legacy sample (5 endpoints):**
 
 ```bash
 # Generate consolidated spec, start server, and open in browser
 ./scripts/browse-api.sh
 ```
 
-**Manual Steps:**
-
-```bash
-# Generate consolidated OpenAPI specification
-redocly bundle openapi/api.yaml --output openapi/openapi-consolidated.yaml --force
-
-# View in Swagger UI
-docker run -d -p 5353:8080 --name trademe-api-docs --rm \
-  -e SWAGGER_JSON=/openapi/openapi-consolidated.yaml \
-  -v "$(pwd)/openapi:/openapi" swaggerapi/swagger-ui
-
-# Stop server: docker stop trademe-api-docs
-```
-
-**Prerequisites:** Redocly CLI (`npm install -g @redocly/cli`) and Docker
+**Prerequisites:** Docker (for Swagger UI), Node.js and js-yaml (for generation)
 
 ## Use Cases
 
