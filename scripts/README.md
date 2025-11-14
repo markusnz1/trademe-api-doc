@@ -4,6 +4,48 @@ This directory contains scripts for downloading and managing Trade Me API docume
 
 ## Scripts
 
+### generate-complete-openapi.js
+
+**NEW!** Generates a complete OpenAPI 3.1 specification from all 265 Trade Me API endpoint JSON specs.
+
+**Purpose**: Creates comprehensive OpenAPI specification files (YAML and JSON) that include all endpoints, schemas, parameters, and responses from the entire Trade Me API.
+
+**Usage**:
+```bash
+node scripts/generate-complete-openapi.js
+```
+
+**What it does**:
+- Processes all 265 JSON endpoint specifications
+- Generates 423 component schemas
+- Creates 240 API path definitions
+- Outputs both YAML and JSON formats
+- Includes OAuth 1.0a security definitions
+- Organizes endpoints by category tags
+- Handles nested object types and enumerations
+
+**Output**:
+- `openapi/trademe-api.yaml` (2.6MB, 65,489 lines)
+- `openapi/trademe-api.json` (3.2MB)
+
+**Features**:
+- Complete parameter definitions (path and query)
+- Request body schemas
+- Response schemas with status codes
+- Security requirements per endpoint
+- Proper type conversions (string, integer, boolean, datetime, arrays, objects)
+- Enum value handling with descriptions
+- Nested schema generation
+- Reference-based schema reuse
+
+**Requirements**:
+- Node.js
+- js-yaml package (install with: `npm install js-yaml`)
+
+### generate-openapi-schemas.js
+
+**LEGACY** - Original proof-of-concept script that only generates schemas for a single endpoint (retrieve-the-details-of-a-single-listing). Replaced by `generate-complete-openapi.js` for comprehensive OpenAPI generation.
+
 ### generate-download-script.py
 
 Generates a comprehensive download script from JSON spec files.
